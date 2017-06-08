@@ -13,6 +13,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -69,6 +70,7 @@ public class ActivityZonaTutor extends AppCompatActivity{
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private NavigationView navView;
     ImageView imageViewu;
+    RecyclerView rvZTu;
 
 
 
@@ -140,6 +142,8 @@ public class ActivityZonaTutor extends AppCompatActivity{
                 return true;
             }
         });
+
+        RecyclerView rv = (RecyclerView)findViewById(R.id.rvZTid);
     }
 
 
