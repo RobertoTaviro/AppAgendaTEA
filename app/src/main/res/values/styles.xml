@@ -1,0 +1,23 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppThemeDefinitivo" parent="Theme.AppCompat.Light.NoActionBar" >
+        <item name="colorPrimary">@android:color/holo_blue_bright</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@android:color/holo_green_light</item>
+        <item name="android:colorBackground">#6EFFFE</item>
+        <item name="android:textColorPrimary">@android:color/background_dark</item>
+        <item name="android:windowBackground">@color/Fondo</item>
+    </style>
+    <style name="TituloPrincipal">
+        <item name="colorPrimary">#FF0000</item>
+        <item name="android:textSize">30sp</item>
+
+        <item name="android:textColor">#651296</item>
+
+    </style>
+
+
+
+
+</resources>

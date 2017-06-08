@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">AppAgendaTEA</string>
+
+    <!-- Strings related to login -->
+    <string name="action_sign_in_short">Acceder</string>
+    <string name="error_invalid_email">Este email no es válido</string>
+    <string name="error_invalid_password">La contraseña es demasiado corta</string>
+    <string name="error_incorrect_password">Contraseña incorrecta</string>
+    <string name="error_field_required">Campo requerido</string>
+    <string name="permission_rationale">"Se requiere permisos a contacto para autocompletar email."
+    </string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- string ids for registration.xml -->
+    <string name="username_textview">Username:</string>
+    <string name="password_textview">Password:</string>
+    <string name="submit">Submit</string>
+</resources>

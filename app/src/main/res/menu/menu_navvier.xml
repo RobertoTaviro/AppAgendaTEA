@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <group android:checkableBehavior="single"
+        android:id="@+id/groupmenulateralid">
+
+        <item
+            android:id="@+id/perfilid"
+            android:checked="false"
+            android:title="PERFIL" />
+
+        <item
+            android:id="@+id/galeriaid"
+            android:checked="false"
+            android:title="GALERIA" />
+
+        <item
+            android:id="@+id/listaagendasid"
+            android:checked="false"
+            android:title="LISTA AGENDAS" />
+
+    </group>
+</menu>
