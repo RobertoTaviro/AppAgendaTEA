@@ -21,8 +21,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.robertopc.appagendatea.ElementosPersistentes.Usuario;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 
 public class ActivityPrincipal extends AppCompatActivity {
@@ -34,6 +38,7 @@ public class ActivityPrincipal extends AppCompatActivity {
     ConstraintLayout tablero, panelCred;
     FrameLayout panelCred1;
     String datosEntrada, datosTutor;
+    List<Usuario> usuarios;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

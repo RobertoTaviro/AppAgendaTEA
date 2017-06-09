@@ -68,7 +68,7 @@ public class ActivityRegistrarTutor extends AppCompatActivity implements OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registrar_tutor);
 
-
+        hiloconexion = new ActivityRegistrarTutor.ObtenerWebService();
         username = (EditText)findViewById(R.id.usernamer);
         password = (EditText)findViewById(R.id.passwordr);
         correoe = (EditText) findViewById(R.id.correoelectronicor);
@@ -98,8 +98,8 @@ public class ActivityRegistrarTutor extends AppCompatActivity implements OnClick
                 pnombre = username.getText().toString();
                 pcorreo = correoe.getText().toString();
                 ppass = password.getText().toString();
-                hiloconexion = new ActivityRegistrarTutor.ObtenerWebService();
                 hiloconexion.execute(INSERT,"3",pnombre, pcorreo, ppass, pimagen); // Parámetros que recibe doInBackground
+
 
                 break;
             case R.id.fromCamerar:
