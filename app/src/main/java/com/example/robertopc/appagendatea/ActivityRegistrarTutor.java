@@ -64,7 +64,7 @@ public class ActivityRegistrarTutor extends AppCompatActivity implements OnClick
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registrar_tutor);
 
@@ -89,7 +89,7 @@ public class ActivityRegistrarTutor extends AppCompatActivity implements OnClick
 
     @Override
     public void onClick(View v) {
-        // TODO Auto-generated method stub
+
         switch (v.getId()){
             case R.id.registrarr:
                 username = (EditText)findViewById(R.id.usernamer);

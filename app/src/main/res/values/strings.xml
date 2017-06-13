@@ -10,7 +10,7 @@
     <string name="permission_rationale">"Se requiere permisos a contacto para autocompletar email."
     </string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- string ids for registration.xml -->

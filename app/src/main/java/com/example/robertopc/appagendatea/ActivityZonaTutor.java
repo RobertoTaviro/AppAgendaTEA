@@ -1,4 +1,4 @@
-package com.example.robertopc.appagendatea;
+ package com.example.robertopc.appagendatea;
 
 import android.content.Context;
 import android.content.Intent;
@@ -73,17 +73,20 @@ public class ActivityZonaTutor extends AppCompatActivity{
 
     String IP = "http://appteatfg.esy.es";
     String INSERT = IP + "/insertar_usuario.php";
-    String GET_ALL_USUARIOS = IP + "/obtener_usuario.php";
+    //String GET_ALL_USUARIOS = IP + "/obtener_usuario.php";
+    String GET_SPECIFIC_USUARIOS = IP + "/obtener_id_usuario_por_id_tutor.php";
     String INSERT_TUTOR_USUARIO = IP + "/insertar_tutor_usuario.php";
-    String OBTENER_ID_USUARIO = IP + "/obtener_id_usuario.php";
+    String OBTENER_ID_USUARIO_BY_NOMBRE = IP + "/obtener_usuario_nombre.php";
+    String OBTENER_USUARIO_BY_ID = IP + "/obtener_usuario_por_id.php";
     ActivityZonaTutor.ObtenerWebService hiloconexion;
     TextView nombretutorz, correoetutorz;
     String datosEntrada, datosTutor, datosRutaImagen, pid, pidUsuario, pimagen = "";
-    ImageView fotoPerfilTutor, fotonuevousuario;
+    ImageView fotoPerfilTutor;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private NavigationView navView;
     ImageView imageViewu;
-    RecyclerView rvZTu;
+    RecyclerView rv;
+    ArrayList <Usuario> usuarios;
 
 
 
@@ -92,6 +95,7 @@ public class ActivityZonaTutor extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zona_tutor);
+        usuarios = new ArrayList<Usuario>();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -125,10 +129,15 @@ public class ActivityZonaTutor extends AppCompatActivity{
                         fotoPerfilTutor.setImageBitmap(myBitmap);
                     }
                 }
+
+                hiloconexion = new ObtenerWebService();
+                String cadenallamada = GET_SPECIFIC_USUARIOS + "?id=" + pid;
+                hiloconexion.execute(cadenallamada,"10"); // Parámetros que recibe doInBackground
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+
 
         navView = (NavigationView)findViewById(R.id.navigation_view_perfil);
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener(){
@@ -157,13 +166,27 @@ public class ActivityZonaTutor extends AppCompatActivity{
             }
         });
 
-        hiloconexion = new ObtenerWebService();
-        hiloconexion.execute(GET_ALL_USUARIOS,"1"); // Parámetros que recibe doInBackground
 
+        rv = (RecyclerView)findViewById(R.id.rvZTid);
+        LinearLayoutManager llm = new LinearLayoutManager(this.getApplicationContext());
+        rv.setLayoutManager(llm);
+        RVAdapter adapter = new RVAdapter(usuarios);
+        rv.setAdapter(adapter);
+        generateUserList();
 
 
     }
 
+    public void refresh(View v){
+        generateUserList();
+    }
+
+    public void generateUserList(){
+        LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
+        rv.setLayoutManager(llm);
+        RVAdapter adapter = new RVAdapter(usuarios);
+        rv.setAdapter(adapter);
+    }
 
     public AlertDialog createDialogoNewUser(Context act) {
 
@@ -282,6 +305,67 @@ public class ActivityZonaTutor extends AppCompatActivity{
             String cadena = params[0];
             URL url = null; // Url de donde queremos obtener información
             String devuelve = "Fallo, no se ha creado";
+
+            if(params[1]=="10"){    // consulta por id los usuarios con el id_tutor en tutor_usuario
+
+                try {
+                    url = new URL(cadena);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //Abrir la conexión
+                    connection.setRequestProperty("User-Agent", "Mozilla/5.0" +
+                            " (Linux; Android 1.5; es-ES) Ejemplo HTTP");
+                    //connection.setHeader("content-type", "application/json");
+
+                    int respuesta = connection.getResponseCode();
+                    StringBuilder result = new StringBuilder();
+
+                    if (respuesta == HttpURLConnection.HTTP_OK){
+
+
+                        InputStream in = new BufferedInputStream(connection.getInputStream());  // preparo la cadena de entrada
+
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(in));  // la introduzco en un BufferedReader
+
+                        // El siguiente proceso lo hago porque el JSONOBject necesita un String y tengo
+                        // que tranformar el BufferedReader a String. Esto lo hago a traves de un
+                        // StringBuilder.
+
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            result.append(line);        // Paso toda la entrada al StringBuilder
+                        }
+
+                        //Creamos un objeto JSONObject para poder acceder a los atributos (campos) del objeto.
+                        JSONObject respuestaJSON = new JSONObject(result.toString());   //Creo un JSONObject a partir del StringBuilder pasado a cadena
+                        //Accedemos al vector de resultados
+
+                        String resultJSON = respuestaJSON.getString("estado");   // estado es el nombre del campo en el JSON
+
+                        devuelve = "GET_SPECIFIC_USUARIOS&"+respuestaJSON.toString();
+
+                        if (resultJSON=="1"){      // hay un id que mostrar
+                            devuelve = "GET_SPECIFIC_USUARIOS&OK";
+                            JSONArray usuarioJSON = respuestaJSON.getJSONArray("id");
+                            for(int i=0;i<usuarioJSON.length();i++){
+                                devuelve = devuelve + "&" + usuarioJSON.getJSONObject(i).getString("id_usuario");
+                            }
+                        }
+                        else if (resultJSON=="2"){
+                            devuelve = "GET_SPECIFIC_USUARIOS&" + "No hay usuarios con ese id, revise el resultado";
+                        }
+
+                    }
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                return devuelve;
+
+
+            }
 
 
             if(params[1]=="1"){    // Consulta de todos los usuarios
@@ -407,10 +491,195 @@ public class ActivityZonaTutor extends AppCompatActivity{
                         String resultJSON = respuestaJSON.getString("estado");   // estado es el nombre del campo en el JSON
 
                         if (resultJSON == "1") {      // hay un alumno que mostrar
-                            devuelve = "INSERT&Usuario creado correctamente&"+params[5];
+                            devuelve = "INSERT&Usuario creado correctamente&"+params[2];
 
                         } else if (resultJSON == "2") {
                             devuelve = "INSERT&El usuario no pudo crearse";
+                        }
+
+
+                    }
+
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                return devuelve;
+
+
+            }
+            else if(params[1]=="11"){    // consulta por id
+
+                try {
+                    url = new URL(cadena);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //Abrir la conexión
+                    connection.setRequestProperty("User-Agent", "Mozilla/5.0" +
+                            " (Linux; Android 1.5; es-ES) Ejemplo HTTP");
+                    //connection.setHeader("content-type", "application/json");
+
+                    int respuesta = connection.getResponseCode();
+                    StringBuilder result = new StringBuilder();
+
+                    if (respuesta == HttpURLConnection.HTTP_OK){
+
+
+                        InputStream in = new BufferedInputStream(connection.getInputStream());  // preparo la cadena de entrada
+
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(in));  // la introduzco en un BufferedReader
+
+                        // El siguiente proceso lo hago porque el JSONOBject necesita un String y tengo
+                        // que tranformar el BufferedReader a String. Esto lo hago a traves de un
+                        // StringBuilder.
+
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            result.append(line);        // Paso toda la entrada al StringBuilder
+                        }
+
+                        //Creamos un objeto JSONObject para poder acceder a los atributos (campos) del objeto.
+                        JSONObject respuestaJSON = new JSONObject(result.toString());   //Creo un JSONObject a partir del StringBuilder pasado a cadena
+                        //Accedemos al vector de resultados
+
+                        String resultJSON = respuestaJSON.getString("estado");   // estado es el nombre del campo en el JSON
+                        devuelve = "OBTENER_USUARIO_BY_ID&" + resultJSON;
+                        if (resultJSON=="1"){      // hay un usuario que mostrar
+                            Usuario user = new Usuario(respuestaJSON.getJSONObject("usuario"));
+                            usuarios.add(user);
+                            devuelve = "OBTENER_USUARIO_BY_ID&" + "Usuario obtenido";
+                        }
+                        else if (resultJSON=="2"){
+                            devuelve = "OBTENER_USUARIO_BY_ID&" + "No hay usuarios con ese id, revise el resultado";
+                        }
+
+                    }
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                return devuelve;
+
+
+            }
+
+            if(params[1]=="2"){    // consulta por nombre
+
+                try {
+                    url = new URL(cadena);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //Abrir la conexión
+                    connection.setRequestProperty("User-Agent", "Mozilla/5.0" +
+                            " (Linux; Android 1.5; es-ES) Ejemplo HTTP");
+                    //connection.setHeader("content-type", "application/json");
+
+                    int respuesta = connection.getResponseCode();
+                    StringBuilder result = new StringBuilder();
+
+                    if (respuesta == HttpURLConnection.HTTP_OK){
+
+
+                        InputStream in = new BufferedInputStream(connection.getInputStream());  // preparo la cadena de entrada
+
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(in));  // la introduzco en un BufferedReader
+
+                        // El siguiente proceso lo hago porque el JSONOBject necesita un String y tengo
+                        // que tranformar el BufferedReader a String. Esto lo hago a traves de un
+                        // StringBuilder.
+
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            result.append(line);        // Paso toda la entrada al StringBuilder
+                        }
+
+                        //Creamos un objeto JSONObject para poder acceder a los atributos (campos) del objeto.
+                        JSONObject respuestaJSON = new JSONObject(result.toString());   //Creo un JSONObject a partir del StringBuilder pasado a cadena
+                        //Accedemos al vector de resultados
+
+                        String resultJSON = respuestaJSON.getString("estado");   // estado es el nombre del campo en el JSON
+
+                        devuelve = "OBTENER_ID_USUARIO_BY_NOMBRE&"+respuestaJSON.toString()+"&null";
+
+                        if (resultJSON=="1"){      // hay un id que mostrar
+                            devuelve = "OBTENER_ID_USUARIO_BY_NOMBRE&" + respuestaJSON.toString() + "&" + respuestaJSON.getJSONObject("id").getString("id");
+
+                        }
+                        else if (resultJSON=="2"){
+                            devuelve = "OBTENER_ID_USUARIO_BY_NOMBRE&" + "No hay usuarios con ese nombre, revise el resultado&null";
+                        }
+
+                    }
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                return devuelve;
+
+
+            }
+
+
+            if (params[1] == "4") {    // insert tutor_usuario
+
+                try {
+                    HttpURLConnection urlConn;
+
+                    DataOutputStream printout;
+                    DataInputStream input;
+                    url = new URL(cadena);
+                    urlConn = (HttpURLConnection) url.openConnection();
+                    urlConn.setDoInput(true);
+                    urlConn.setDoOutput(true);
+                    urlConn.setUseCaches(false);
+                    urlConn.setRequestProperty("Content-Type", "application/json");
+                    urlConn.setRequestProperty("Accept", "application/json");
+                    urlConn.connect();
+                    //Creo el Objeto JSON
+                    JSONObject jsonParam = new JSONObject();
+                    jsonParam.put("id_tutor", params[2]);
+                    jsonParam.put("id_usuario", params[3]);
+                    // Envio los parámetros post.
+                    OutputStream os = urlConn.getOutputStream();
+                    BufferedWriter writer = new BufferedWriter(
+                            new OutputStreamWriter(os, "UTF-8"));
+                    writer.write(jsonParam.toString());
+                    writer.flush();
+                    writer.close();
+
+                    int respuesta = urlConn.getResponseCode();
+
+                    StringBuilder result = new StringBuilder();
+
+                    if (respuesta == HttpURLConnection.HTTP_OK) {
+
+                        String line;
+                        BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
+                        while ((line = br.readLine()) != null) {
+                            result.append(line);
+                            //response+=line;
+                        }
+                        devuelve = "INSERT_TUTOR_USUARIO&"+result.toString();
+
+                        //Creamos un objeto JSONObject para poder acceder a los atributos (campos) del objeto.
+                        JSONObject respuestaJSON = new JSONObject(result.toString());   //Creo un JSONObject a partir del StringBuilder pasado a cadena
+                        //Accedemos al vector de resultados
+
+                        String resultJSON = respuestaJSON.getString("estado");   // estado es el nombre del campo en el JSON
+
+                        if (resultJSON == "1") {      // hay un alumno que mostrar
+                            devuelve = "INSERT_TUTOR_USUARIO&Usuario creado correctamente";
+
+                        } else if (resultJSON == "2") {
+                            devuelve = "INSERT_TUTOR_USUARIO&El usuario no pudo crearse";
                         }
 
 
@@ -440,37 +709,49 @@ public class ActivityZonaTutor extends AppCompatActivity{
 
             String[] separador = s.split("&");
 
-
-            Toast toast = Toast.makeText(getApplicationContext(), separador[1], Toast.LENGTH_LONG);
-            toast.show();
-            //super.onPostExecute(s);
-            if(separador[0].equals("GET_ALL_USUARIOS")){
-                List <Usuario> usuarios = new ArrayList<>();
-                try {
-                    JSONObject jsonObject = new JSONObject(s);
-                    JSONArray jsonArray = jsonObject.getJSONArray("usuario");
-
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject explrObject = jsonArray.getJSONObject(i);
-                        Usuario user = new Usuario(explrObject);
-                        usuarios.add(user);
+            if(separador[0].equals("GET_SPECIFIC_USUARIOS")){
+                if(separador[1].equals("OK")){
+                    for (int i = 2; i<separador.length;i++){
+                        hiloconexion = new ObtenerWebService();
+                        String cadenallamada = OBTENER_USUARIO_BY_ID + "?id=" + separador[i];
+                        hiloconexion.execute(cadenallamada,"11");   // Parámetros que recibe doInBackground
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-                RecyclerView rv = (RecyclerView)findViewById(R.id.rvZTid);
-                LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
-                rv.setLayoutManager(llm);
-
-                RVAdapter adapter = new RVAdapter(usuarios);
-                rv.setAdapter(adapter);
             }
-            else if (separador[0].equals("GET_ALL_USUARIOS")){
-                //TODO: hacer que busque el id usuario del por los datos, recien creado.
+            else if (separador[0].equals("INSERT")){
+                Toast toast = Toast.makeText(getApplicationContext(), "INSERT:  "+separador[1] +" + "+ separador[2], Toast.LENGTH_SHORT);
+                toast.show();
+                hiloconexion = new ObtenerWebService();
+                String cadenallamada = OBTENER_ID_USUARIO_BY_NOMBRE + "?nombre=" + separador[2];
+                hiloconexion.execute(cadenallamada,"2");   // Parámetros que recibe doInBackground
 
-                //TODO: hacer que se inserte una nueva fila con el id del usuario, pero en postEjecute del metodo anterior.
-                hiloconexion.execute(INSERT_TUTOR_USUARIO,"6",pid,"");
+            } else if (separador[0].equals("OBTENER_ID_USUARIO_BY_NOMBRE")){
+                if (separador[1].equals("No hay usuarios con ese nombre, revise el resultado")){
+                    Toast toast = Toast.makeText(getApplicationContext(), separador[1], Toast.LENGTH_SHORT);
+                    toast.show();
+                } else{
+                    Toast toast = Toast.makeText(getApplicationContext(), "OBTENER_ID_USUARIO_BY_NOMBRE:  "+separador[1]+" + "+separador[2], Toast.LENGTH_SHORT);
+                    toast.show();
+                    pidUsuario = separador[2];
+                    hiloconexion = new ObtenerWebService();
+                    hiloconexion.execute(INSERT_TUTOR_USUARIO,"4",pid, pidUsuario);
+                }
+
+            } else if (separador[0].equals("INSERT_TUTOR_USUARIO")){
+                usuarios = new ArrayList<Usuario>();
+                Toast toast = Toast.makeText(getApplicationContext(), "INSERT_TUTOR_USUARIO:  "+separador[1], Toast.LENGTH_SHORT);
+                toast.show();
+                hiloconexion = new ObtenerWebService();
+                String cadenallamada = GET_SPECIFIC_USUARIOS + "?id=" + pid;
+                hiloconexion.execute(cadenallamada,"10");
+
             }
+            else if (separador[0].equals("OBTENER_USUARIO_BY_ID")){
+                generateUserList();
+
+            }
+
+
 
         }
 
