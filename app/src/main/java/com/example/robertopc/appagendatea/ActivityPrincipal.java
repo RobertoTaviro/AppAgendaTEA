@@ -115,11 +115,13 @@ public class ActivityPrincipal extends AppCompatActivity {
 
     public void goAgenda(View v){
         Intent intent = new Intent(ActivityPrincipal.this, ActivityAgenda.class);
+        intent.putExtra("tutor", getIntent().getStringExtra("tutor"));
         startActivity(intent);
     }
 
     public void goAyuda(View v){
         Intent intent = new Intent(ActivityPrincipal.this, ActivityAyuda.class);
+        intent.putExtra("tutor", getIntent().getStringExtra("tutor"));
         startActivity(intent);
     }
 

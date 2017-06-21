@@ -17,7 +17,7 @@ import java.util.List;
  * Created by RobertoPC on 09/06/2017.
  */
 
-public class RVAdapter extends RecyclerView.Adapter<RVAdapter.UsuarioViewHolder> {
+public class RVAdapterUsuario extends RecyclerView.Adapter<RVAdapterUsuario.UsuarioViewHolder> {
 
     public static class UsuarioViewHolder extends RecyclerView.ViewHolder {
         CardView cv;
@@ -36,19 +36,19 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.UsuarioViewHolder>
 
     List<Usuario> usuarios;
 
-    public RVAdapter(List<Usuario> usuarios){
+    public RVAdapterUsuario(List<Usuario> usuarios){
         this.usuarios = usuarios;
     }
 
     @Override
-    public RVAdapter.UsuarioViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RVAdapterUsuario.UsuarioViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view_lista_vertical, parent, false);
         UsuarioViewHolder uvh = new UsuarioViewHolder(v);
         return uvh;
     }
 
     @Override
-    public void onBindViewHolder(RVAdapter.UsuarioViewHolder holder, int position) {
+    public void onBindViewHolder(RVAdapterUsuario.UsuarioViewHolder holder, int position) {
         holder.personName.setText(usuarios.get(position).getNombre());
         holder.personAge.setText(usuarios.get(position).getFechaNacimiento());
         holder.personPhoto.setImageBitmap(usuarios.get(position).getImagen());

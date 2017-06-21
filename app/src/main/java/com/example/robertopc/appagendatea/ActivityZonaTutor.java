@@ -4,12 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,7 +18,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -39,19 +36,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.robertopc.appagendatea.ElementosPersistentes.Usuario;
-import com.example.robertopc.appagendatea.Utils.RVAdapter;
+import com.example.robertopc.appagendatea.Utils.RVAdapterUsuario;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -60,16 +51,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.StringTokenizer;
 
-public class ActivityZonaTutor extends AppCompatActivity{
+ public class ActivityZonaTutor extends AppCompatActivity{
 
     String IP = "http://appteatfg.esy.es";
     String INSERT = IP + "/insertar_usuario.php";
@@ -87,6 +73,7 @@ public class ActivityZonaTutor extends AppCompatActivity{
     ImageView imageViewu;
     RecyclerView rv;
     ArrayList <Usuario> usuarios;
+     AlertDialog ad;
 
 
 
@@ -101,7 +88,7 @@ public class ActivityZonaTutor extends AppCompatActivity{
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog ad = createDialogoNewUser(view.getContext());
+                ad = createDialogoNewUser(view.getContext());
                 ad.show();
             }
         });
@@ -123,7 +110,7 @@ public class ActivityZonaTutor extends AppCompatActivity{
                 correoetutorz.setText(jdatostutor.getString("correoe"));
                 datosRutaImagen = jdatostutor.getString("imagen");
                 if(!datosRutaImagen.equals("")){
-                    File imgFile = new  File("/sdcard/AppAgendaTea/"+datosRutaImagen);
+                    File imgFile = new  File("/storage/emulated/0/AppAgendaTea/"+datosRutaImagen);
                     if(imgFile.exists()){
                         Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                         fotoPerfilTutor.setImageBitmap(myBitmap);
@@ -170,7 +157,7 @@ public class ActivityZonaTutor extends AppCompatActivity{
         rv = (RecyclerView)findViewById(R.id.rvZTid);
         LinearLayoutManager llm = new LinearLayoutManager(this.getApplicationContext());
         rv.setLayoutManager(llm);
-        RVAdapter adapter = new RVAdapter(usuarios);
+        RVAdapterUsuario adapter = new RVAdapterUsuario(usuarios);
         rv.setAdapter(adapter);
         generateUserList();
 
@@ -184,7 +171,7 @@ public class ActivityZonaTutor extends AppCompatActivity{
     public void generateUserList(){
         LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
         rv.setLayoutManager(llm);
-        RVAdapter adapter = new RVAdapter(usuarios);
+        RVAdapterUsuario adapter = new RVAdapterUsuario(usuarios);
         rv.setAdapter(adapter);
     }
 
@@ -721,6 +708,7 @@ public class ActivityZonaTutor extends AppCompatActivity{
             else if (separador[0].equals("INSERT")){
                 Toast toast = Toast.makeText(getApplicationContext(), "INSERT:  "+separador[1] +" + "+ separador[2], Toast.LENGTH_SHORT);
                 toast.show();
+                ad.dismiss();
                 hiloconexion = new ObtenerWebService();
                 String cadenallamada = OBTENER_ID_USUARIO_BY_NOMBRE + "?nombre=" + separador[2];
                 hiloconexion.execute(cadenallamada,"2");   // Parámetros que recibe doInBackground

@@ -6,4 +6,6 @@
     <color name="primary_dark_material_light">#757575</color>
     <color name="accent_material_light">#009689</color>
     <color name="Fondo">#6efff1</color>
+    <color name="LateralMenuColor">#651296</color>
+    <color name="Secundary">#6acccb</color>
 </resources>

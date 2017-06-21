@@ -5,13 +5,153 @@
     android:id="@+id/panelCF"
     android:layout_width="650dp"
     android:layout_height="350dp"
+    android:background="@color/Fondo"
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="25dp">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="270dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginTop="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5">
+
+            <ScrollView
+                android:layout_width="375dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="0dp">
+
+                    <ImageView
+                        android:id="@+id/imageviewf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginTop="16dp"
+                        android:scaleType="fitCenter"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/nombrefamiliaf"
+                        app:srcCompat="@drawable/imagenvacia" />
+
+                    <EditText
+                        android:id="@+id/nombrefamiliaf"
+                        android:layout_width="0dp"
+                        android:layout_height="46dp"
+                        android:layout_alignLeft="@+id/textView1"
+                        android:layout_below="@+id/textView1"
+                        android:layout_marginLeft="24dp"
+                        android:layout_marginRight="24dp"
+                        android:layout_marginTop="8dp"
+                        android:ems="10"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textview112" />
+
+                    <Button
+                        android:id="@+id/addphotocameraf"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginTop="16dp"
+                        android:text="cargar desde cámara"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/imageviewf" />
+
+                    <Button
+                        android:id="@+id/addphotofrommemoryf"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginTop="8dp"
+                        android:text="Cargar desde dispositivo"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/addphotocameraf" />
+
+                    <TextView
+                        android:id="@+id/textview112"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignLeft="@+id/passwordr"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="24dp"
+                        android:layout_marginRight="24dp"
+                        android:layout_marginTop="24dp"
+                        android:text="Nombre de la Familia:"
+                        android:textSize="20sp"
+                        app:layout_constraintHorizontal_bias="0.491"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Button
+                        android:id="@+id/crearf"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_alignRight="@+id/passwordr"
+                        android:layout_below="@+id/passwordr"
+                        android:layout_marginBottom="32dp"
+                        android:layout_marginLeft="32dp"
+                        android:layout_marginRight="32dp"
+                        android:layout_marginTop="24dp"
+                        android:text="Crear familia"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/addphotofrommemoryf" />
+                </android.support.constraint.ConstraintLayout>
+            </ScrollView>
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="0dp"
         android:layout_height="64dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="-4dp"
         android:background="#FFFE9F"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -27,6 +167,7 @@
             android:gravity="center"
             android:lineSpacingExtra="10sp"
             android:text="NUEVA FAMILIA"
+            android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#4A86E8"
             android:textSize="30sp"
@@ -36,144 +177,6 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0" />
-    </android.support.constraint.ConstraintLayout>
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="0dp"
-        android:layout_height="270dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
-
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginRight="0dp"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginLeft="0dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="0dp"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="0dp">
-
-            <ScrollView
-                android:layout_width="375dp"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginLeft="8dp">
-
-                <android.support.constraint.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    tools:layout_editor_absoluteX="0dp"
-                    tools:layout_editor_absoluteY="0dp">
-
-                    <ImageView
-                        android:id="@+id/imagenvaciaf"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:scaleType="fitCenter"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/nombrefamiliaf"
-                        app:srcCompat="@drawable/imagenvacia"
-                        android:layout_marginTop="16dp"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        android:layout_marginRight="8dp"
-                        android:layout_marginLeft="8dp" />
-
-                    <EditText
-                        android:id="@+id/nombrefamiliaf"
-                        android:layout_width="0dp"
-                        android:layout_height="46dp"
-                        android:layout_alignLeft="@+id/textView1"
-                        android:layout_below="@+id/textView1"
-                        android:ems="10"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textview112"
-                        android:layout_marginTop="8dp"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        android:layout_marginRight="24dp"
-                        android:layout_marginLeft="24dp" />
-
-                    <Button
-                        android:id="@+id/button3"
-                        android:layout_width="0dp"
-                        android:layout_height="48dp"
-                        android:text="cargar desde cámara"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/imagenvaciaf"
-                        android:layout_marginTop="16dp"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        android:layout_marginRight="8dp"
-                        android:layout_marginLeft="8dp" />
-
-                    <Button
-                        android:id="@+id/desdeDispositivo"
-                        android:layout_width="0dp"
-                        android:layout_height="48dp"
-                        android:text="Cargar desde dispositivo"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/button3"
-                        android:layout_marginTop="8dp"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        android:layout_marginRight="8dp"
-                        android:layout_marginLeft="8dp" />
-
-                    <TextView
-                        android:id="@+id/textview112"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_alignLeft="@+id/passwordr"
-                        android:layout_centerVertical="true"
-                        android:text="Nombre de la Familia:"
-                        android:textSize="20sp"
-                        app:layout_constraintHorizontal_bias="0.491"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:layout_marginTop="24dp"
-                        android:layout_marginRight="24dp"
-                        android:layout_marginLeft="24dp" />
-
-                    <Button
-                        android:id="@+id/crearf"
-                        android:layout_width="0dp"
-                        android:layout_height="48dp"
-                        android:layout_alignRight="@+id/passwordr"
-                        android:layout_below="@+id/passwordr"
-                        android:text="Crear familia"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/desdeDispositivo"
-                        android:layout_marginTop="24dp"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        android:layout_marginRight="32dp"
-                        android:layout_marginLeft="32dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        android:layout_marginBottom="32dp" />
-                </android.support.constraint.ConstraintLayout>
-            </ScrollView>
-        </android.support.constraint.ConstraintLayout>
-
     </android.support.constraint.ConstraintLayout>
 
 
