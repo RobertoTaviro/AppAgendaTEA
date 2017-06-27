@@ -13,7 +13,7 @@ public class DbHelper extends SQLiteOpenHelper{
 
     private static final String DB_NAME = "database.sqlite";
 
-    private static final int DB_SCHEME_VERSION = 1;
+    private static final int DB_SCHEME_VERSION = 2;
 
     public DbHelper(Context context, String tutor_id){
         super(context, tutor_id+"_"+DB_NAME, null, DB_SCHEME_VERSION);
@@ -30,6 +30,7 @@ public class DbHelper extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(DataBaseManager.getCreateTableFamilia());
+        db.execSQL(DataBaseManager.getCreateTableAgenda());
 
     }
 
