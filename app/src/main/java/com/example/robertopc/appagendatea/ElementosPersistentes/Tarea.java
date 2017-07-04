@@ -1,5 +1,7 @@
 package com.example.robertopc.appagendatea.ElementosPersistentes;
 
+import android.graphics.Bitmap;
+
 import java.util.ArrayList;
 
 /**
@@ -9,14 +11,16 @@ import java.util.ArrayList;
 public class Tarea {
 
     private String id, nombre, dia;
+    private byte[] imagen;
     private ArrayList<Pictograma> glosario;
 
 
-    public Tarea(String id, String nombre, String dia, ArrayList<Pictograma> glosario) {
+    public Tarea(String id, String nombre, String dia,  byte[] imagen, ArrayList<Pictograma> glosario) {
         this.id = id;
         this.nombre = nombre;
         this.dia = dia;
         this.glosario = glosario;
+        this.imagen = imagen;
     }
 
     public String getId() {
@@ -51,6 +55,13 @@ public class Tarea {
         this.dia = dia;
     }
 
+    public byte[] getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(byte[] imagen) {
+        this.imagen = imagen;
+    }
 
     public void insertarPictograma (Pictograma pictograma){
         this.glosario.add(pictograma);

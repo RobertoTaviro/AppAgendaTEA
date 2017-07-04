@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.ContactsContract;
@@ -20,6 +22,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -33,8 +36,13 @@ import android.widget.Toast;
 import com.example.robertopc.appagendatea.ElementosPersistentes.DataBaseManager;
 import com.example.robertopc.appagendatea.ElementosPersistentes.DbHelper;
 import com.example.robertopc.appagendatea.ElementosPersistentes.Familia;
+import com.example.robertopc.appagendatea.ElementosPersistentes.Pictograma;
 import com.example.robertopc.appagendatea.ElementosPersistentes.Usuario;
+import com.example.robertopc.appagendatea.Utils.AdaptadorListener;
+import com.example.robertopc.appagendatea.Utils.OnAdapterListener;
+import com.example.robertopc.appagendatea.Utils.OnFirstPictogramGaleriaClick;
 import com.example.robertopc.appagendatea.Utils.RVAdapterFamilia;
+import com.example.robertopc.appagendatea.Utils.RVAdapterPictogram;
 import com.example.robertopc.appagendatea.Utils.RVAdapterUsuario;
 
 import org.json.JSONException;
@@ -43,6 +51,7 @@ import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -57,6 +66,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 public class ActivityZonaTutorGaleria extends AppCompatActivity {
@@ -64,16 +74,22 @@ public class ActivityZonaTutorGaleria extends AppCompatActivity {
     String IP = "http://appteatfg.esy.es";
     String INSERT = IP + "/insertar_familia.php";
     ActivityZonaTutorGaleria.ObtenerWebService hiloconexion;
-    ImageView imageviewfamilia;
-    String datosEntrada, datosTutor, pimagen = "", pid;
+    ImageView imageviewfamilia, imageviewCP;
+    String datosEntrada, datosTutor, pid;
+    byte[] pimagen, cpimagen;
     private NavigationView navView;
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    RecyclerView rvf;
-    ArrayList<Familia> familias;
+    RecyclerView rvf, rvp;
+    List<Familia> familias;
+    List<Pictograma> pictogramas;
     DataBaseManager db;
-    AlertDialog ad;
+    AlertDialog ad, adcp;
     Cursor cursor;
     SimpleCursorAdapter adapter;
+    static String id = "";
+    OnAdapterListener adaptadorListener;
+    OnFirstPictogramGaleriaClick onFirstPictogramGaleriaClick;
+    Context context;
 
 
 
@@ -82,6 +98,39 @@ public class ActivityZonaTutorGaleria extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zona_tutor_galeria);
         familias = new ArrayList<Familia>();
+        pictogramas = new ArrayList<Pictograma>();
+        context = this;
+        onFirstPictogramGaleriaClick = new OnFirstPictogramGaleriaClick() {
+            @Override
+            public void onFirstPictogramGaleriaClick(int pos) {
+                Log.d(" posicion","" + pos);
+                if(pos==0){
+                    adcp = createDialogoNewPictogram(context, pos);
+                    adcp.show();
+                }
+            }
+        };
+        adaptadorListener = new OnAdapterListener() {
+
+            @Override
+            public void onFamClicked(int position, ArrayList<Pictograma> pictos) {
+                Log.d(" posicion","" + position);
+                pictogramas = pictos;
+                for (int i = 0; i < pictogramas.size(); i++) {
+                    Toast.makeText(ActivityZonaTutorGaleria.this, "elemento "+i+" - id: " + pictogramas.get(i).getId().toString() + "\n" +
+                            "nombre: " + pictogramas.get(i).getNombre().toString() + "\n" +
+                            "imagen: " + pictogramas.get(i).getImagen().toString() +"\n" , Toast.LENGTH_SHORT).show();
+
+                }
+                rvp = (RecyclerView) findViewById(R.id.rvZTgPid);
+                LinearLayoutManager llmp = new LinearLayoutManager(context);
+                llmp.setOrientation(LinearLayoutManager.HORIZONTAL);
+                rvp.setLayoutManager(llmp);
+                RVAdapterPictogram adapterp = new RVAdapterPictogram(pictogramas, onFirstPictogramGaleriaClick);
+                rvp.setAdapter(adapterp);
+
+            }
+        };
 
         Intent intent = this.getIntent();
         if (intent == null){
@@ -129,32 +178,49 @@ public class ActivityZonaTutorGaleria extends AppCompatActivity {
         });
 
         rvf = (RecyclerView)findViewById(R.id.rvZTgid);
+        familias = db.getFamiliasList();
+        Toast.makeText(ActivityZonaTutorGaleria.this, "tenemos - id: " + familias.get(0).getId().toString() + "\n" +
+                "nombre: " + familias.get(0).getNombre().toString() + "\n" +
+                "imagen: " + familias.get(0).getImagen().toString() + "\n" +
+                "pictogramas[]: " + familias.get(0).getPictogramas().toString(), Toast.LENGTH_SHORT).show();
         LinearLayoutManager llm = new LinearLayoutManager(this.getApplicationContext());
+        llm.setOrientation(LinearLayoutManager.HORIZONTAL);
         rvf.setLayoutManager(llm);
-        RVAdapterFamilia adapter = new RVAdapterFamilia(familias);
+        RVAdapterFamilia adapter = new RVAdapterFamilia(familias, adaptadorListener);
         rvf.setAdapter(adapter);
         generateFamilyList();
 
-
-        String[] from = new String[]{db.getfId(),db.getfNombre(), db.getfRuta()};
-        int[] to = new int[]{android.R.id.text1, android.R.id.text2};
-
-        cursor = db.cargarCursorFamilia();
-        //TODO: aqui
-        //adapter = new RVAdapterFamilia(this,, cursor, from, to);
 
     }
 
     public void refresh(View v){
         generateFamilyList();
+        generatePictoList();
     }
 
     public void generateFamilyList(){
+        familias = db.getFamiliasList();
         LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
+        llm.setOrientation(LinearLayoutManager.HORIZONTAL);
         rvf.setLayoutManager(llm);
-        RVAdapterFamilia adapter = new RVAdapterFamilia(familias);
+        RVAdapterFamilia adapter = new RVAdapterFamilia(familias, adaptadorListener);
         rvf.setAdapter(adapter);
     }
+    public void generatePictoList(){
+        rvp = (RecyclerView) findViewById(R.id.rvZTgPid);
+        LinearLayoutManager llmp = new LinearLayoutManager(this.getApplicationContext());
+        llmp.setOrientation(LinearLayoutManager.HORIZONTAL);
+        rvp.setLayoutManager(llmp);
+        RVAdapterPictogram adapterp = new RVAdapterPictogram(pictogramas, onFirstPictogramGaleriaClick);
+        rvp.setAdapter(adapterp);
+    }
+
+    public static void putListaPictos(String id){
+        ActivityZonaTutorGaleria.id = id;
+    }
+
+
+
 
 
     public void nuevaFamilia(View view){
@@ -202,12 +268,17 @@ public class ActivityZonaTutorGaleria extends AppCompatActivity {
                     /**hiloconexion = new ActivityZonaTutorGaleria.ObtenerWebService();
                     hiloconexion.execute(INSERT,"3",nombref.getText().toString(),pimagen);*/
 
-                    if (db.insertar_familia(nombref.getText().toString(), pimagen)==-1){
+                    //TODO: al insertar familia, le tengo que pasar el string de familias, como es la primera, va vacío, pero revisar por si acaso.
+
+                    if (db.insertar_familia(nombref.getText().toString(), pimagen, "{\"pictogramas\":[{\"id\":\"id0\",\"nombre\":\"Nuevo Picto\",\"imagen\":\""+pimagen+"\"}]}")==-1){
                         Toast toast = Toast.makeText(getApplicationContext(), "No se ha insertado la familia, revisar los campos", Toast.LENGTH_SHORT);
                         toast.show();
                     }
                     else{
+                        Toast toast = Toast.makeText(getApplicationContext(), "Nueva familia creada", Toast.LENGTH_SHORT);
+                        toast.show();
                         ad.dismiss();
+                        generateFamilyList();
                     }
 
 
@@ -218,6 +289,68 @@ public class ActivityZonaTutorGaleria extends AppCompatActivity {
         return builder.create();
     }
 
+    public AlertDialog createDialogoNewPictogram(Context act, int pos) {
+        final int poss = pos;
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(act);
+
+        LayoutInflater inflater = ActivityZonaTutorGaleria.this.getLayoutInflater();
+
+        View v = inflater.inflate(R.layout.nuevo_pictograma, null);
+
+        builder.setView(v);
+
+        Button btnCrearCP = (Button) v.findViewById(R.id.crearcp);
+        Button btnCameraCP = (Button) v.findViewById(R.id.addphotocameracp);
+        Button btnMemortCP = (Button) v.findViewById(R.id.addphotofrommemorycp);
+        imageviewCP = (ImageView) v.findViewById(R.id.imageviewcp);
+        final EditText nombreCP = (EditText)v.findViewById(R.id.nombrepictogramacp);
+
+        btnCameraCP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dispatchTakePictureIntentPictograma();
+
+            }
+
+        });
+
+        btnCrearCP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ocultarTeclado(v.getContext());
+                Boolean bool = true;
+                if(nombreCP.getText().toString().isEmpty()){
+                    nombreCP.setError("Rellene el campo");
+                    bool=false;
+                }
+                if (bool){
+                    /**hiloconexion = new ActivityZonaTutorGaleria.ObtenerWebService();
+                     hiloconexion.execute(INSERT,"3",nombref.getText().toString(),cpimagen);*/
+                        Familia fam = familias.get(poss);
+                        int tam = fam.getPictogramas().size();
+                        Pictograma pictogram = new Pictograma("id_"+tam,nombreCP.getText().toString(),cpimagen);
+                        fam.addPictograma(pictogram);
+                        String nuevoPicto = "{\"id\":\"id_"+tam+"\",\"nombre\":\""+nombreCP.getText().toString()+"\",\"imagen\":\""+new String(cpimagen)+"\"}";
+                        db.añadirPictogramaAFamilia(poss, nuevoPicto);
+                        Toast toast = Toast.makeText(getApplicationContext(), "Nuevo Pictograma creado, para visualizar vuelva a hacer click en la Familia correspondiente", Toast.LENGTH_SHORT);
+                        toast.show();
+                        adcp.dismiss();
+
+                }
+            }
+        });
+
+        return builder.create();
+    }
+
+
+    private void dispatchTakePictureIntentPictograma() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE+1);
+        }
+    }
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -226,39 +359,24 @@ public class ActivityZonaTutorGaleria extends AppCompatActivity {
         }
     }
 
-    private String getPictureName(){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        String timestamp = sdf.format(new Date());
-        return "Familia_"+timestamp+".png";
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Toast.makeText(ActivityZonaTutorGaleria.this, "result code bien", Toast.LENGTH_LONG);
             Bundle extras = data.getExtras();
             Bitmap cameraImage = (Bitmap) extras.get("data");
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            cameraImage.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            pimagen = baos.toByteArray();
             imageviewfamilia.setImageBitmap(cameraImage); //cuidado null exception
-            FileOutputStream out = null;
-            try {
-                File pictureDirectory = Environment.getExternalStoragePublicDirectory("AppAgendaTea");
-                String pictureName = getPictureName();
-                pimagen = pictureName;
-                File imageFile = new File(pictureDirectory, pictureName);
-                out = new FileOutputStream(imageFile);
-                cameraImage.compress(Bitmap.CompressFormat.PNG, 100, out);
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (out != null) {
-                        out.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+        } else if (requestCode == (REQUEST_IMAGE_CAPTURE+1) && resultCode == RESULT_OK){
+            Bundle extras = data.getExtras();
+            Bitmap cameraImage = (Bitmap) extras.get("data");
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            cameraImage.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            cpimagen = baos.toByteArray();
+            imageviewCP.setImageBitmap(cameraImage); //cuidado null exception
         }
     }
 

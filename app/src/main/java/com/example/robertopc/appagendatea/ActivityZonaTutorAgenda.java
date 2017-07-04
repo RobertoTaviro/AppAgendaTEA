@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.example.robertopc.appagendatea.ElementosPersistentes.Agenda;
 import com.example.robertopc.appagendatea.ElementosPersistentes.DataBaseManager;
 import com.example.robertopc.appagendatea.ElementosPersistentes.Usuario;
+import com.example.robertopc.appagendatea.Utils.OnAgendaListener;
 import com.example.robertopc.appagendatea.Utils.RVAdapterAgenda;
 import com.example.robertopc.appagendatea.Utils.RVAdapterUsuario;
 
@@ -38,11 +39,27 @@ public class ActivityZonaTutorAgenda extends AppCompatActivity {
     String datosEntrada, datosTutor, pid = "";
     RecyclerView rv;
     List<Agenda> agendas;
+    private Context context = this;
+    OnAgendaListener onAgendaListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zona_tutor_agenda);
+
+        onAgendaListener = new OnAgendaListener() {
+            @Override
+            public void onFondoClicked(int position) {
+                Toast.makeText(ActivityZonaTutorAgenda.this,"Fondo - Posicion: "+position,Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onEditClicket(int position) {
+                Toast.makeText(ActivityZonaTutorAgenda.this,"Edit - Posicion: "+position,Toast.LENGTH_SHORT).show();
+                Intent intentedit = new Intent(ActivityZonaTutorAgenda.this, ActivityEditarAgenda.class);
+                startActivity(intentedit.putExtra("tutor", getIntent().getStringExtra("tutor")));
+            }
+        };
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.floatingActionButtonagendaid);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -103,8 +120,9 @@ public class ActivityZonaTutorAgenda extends AppCompatActivity {
         rv = (RecyclerView)findViewById(R.id.recViewAgendasID);
         LinearLayoutManager llm = new LinearLayoutManager(this.getApplicationContext());
         rv.setLayoutManager(llm);
-        RVAdapterAgenda adapter = new RVAdapterAgenda(agendas);
+        RVAdapterAgenda adapter = new RVAdapterAgenda(agendas, context, onAgendaListener);
         rv.setAdapter(adapter);
+
         generateUserList();
 
 
@@ -117,7 +135,7 @@ public class ActivityZonaTutorAgenda extends AppCompatActivity {
     public void generateUserList(){
         LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
         rv.setLayoutManager(llm);
-        RVAdapterAgenda adapter = new RVAdapterAgenda(agendas);
+        RVAdapterAgenda adapter = new RVAdapterAgenda(agendas, context, onAgendaListener);
         rv.setAdapter(adapter);
     }
 

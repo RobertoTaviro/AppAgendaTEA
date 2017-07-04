@@ -2,13 +2,16 @@ package com.example.robertopc.appagendatea.ElementosPersistentes;
 
 import android.graphics.Bitmap;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by RobertoPC on 27/06/2017.
  */
 
 public class Pictograma {
-    private String id, nombre, ruta;
-    private Bitmap imagen;
+    private String id, nombre;
+    private byte[] imagen;
 
     public Pictograma() {
     }
@@ -18,11 +21,22 @@ public class Pictograma {
         this.nombre = nombre;
     }
 
-    public Pictograma(String id, String nombre, String ruta, Bitmap imagen) {
+    public Pictograma(String id, String nombre, byte[] imagen) {
         this.id = id;
         this.nombre = nombre;
-        this.ruta = ruta;
         this.imagen = imagen;
+    }
+
+    public Pictograma(JSONObject objetoJSON) {
+        try {
+            this.id = objetoJSON.getString("id");
+            this.nombre = objetoJSON.getString("nombre");
+
+            //TODO: cambiarlo por la petición a SQLite de una imagen
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getId() {
@@ -41,19 +55,14 @@ public class Pictograma {
         this.nombre = nombre;
     }
 
-    public String getRuta() {
-        return ruta;
-    }
-
-    public void setRuta(String ruta) {
-        this.ruta = ruta;
-    }
-
-    public Bitmap getImagen() {
+    public byte[] getImagen() {
         return imagen;
     }
 
-    public void setImagen(Bitmap imagen) {
+    public void setImagen(byte[] imagen) {
         this.imagen = imagen;
     }
+
+
 }
+

@@ -80,14 +80,12 @@
         <android.support.constraint.ConstraintLayout
             android:id="@+id/zonatutorconstrainteditpictog"
             android:layout_width="0dp"
-            android:layout_height="79dp"
+            android:layout_height="60dp"
             android:background="#6ACCCB"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/zonatutorconstraintTitulog"
-            app:layout_constraintVertical_bias="1.0">
+            app:layout_constraintRight_toRightOf="parent">
 
 
         </android.support.constraint.ConstraintLayout>
@@ -106,16 +104,16 @@
                 android:id="@+id/rvZTgid"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginBottom="0dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginTop="0dp"
                 android:orientation="horizontal"
                 app:layoutManager="android.support.v7.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@+id/imagebuttonNuevaFamiliaG"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp" />
 
             <TextView
                 android:id="@+id/textView2"
@@ -147,6 +145,22 @@
                 app:srcCompat="@drawable/nuevafamilia" />
 
         </android.support.constraint.ConstraintLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvZTgPid"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginTop="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/zonatutorconstrainteditpictog"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/zonatutorconstraintTitulog"
+            app:layout_constraintVertical_bias="1.0"
+            tools:layout_editor_absoluteY="122dp" />
     </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>

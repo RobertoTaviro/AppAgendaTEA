@@ -7,14 +7,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 /**
  * Created by RobertoPC on 16/06/2017.
  */
 
 public class Familia {
-    private String id, nombre, ruta;
-    private Bitmap imagen;
+    private String id, nombre;
+    private byte[] imagen;
+    private ArrayList<Pictograma> pictogramas;
 
     public Familia() {
     }
@@ -24,25 +27,26 @@ public class Familia {
         this.nombre = nombre;
     }
 
-    public Familia(String id, String nombre, String ruta, Bitmap imagen) {
+    public Familia(String id, String nombre, byte[] imagen) {
         this.id = id;
         this.nombre = nombre;
-        this.ruta = ruta;
         this.imagen = imagen;
+    }
+
+    public Familia(String id, String nombre, byte[] imagen, ArrayList<Pictograma> pictogramas) {
+        this.id = id;
+        this.nombre = nombre;
+        this.imagen = imagen;
+        this.pictogramas = pictogramas;
     }
 
     public Familia(JSONObject objetoJSON) {
         try {
             this.id = objetoJSON.getString("id");
             this.nombre = objetoJSON.getString("nombre");
-            this.ruta = objetoJSON.getString("imagen");
 
-            if(!ruta.equals("")){
-                File imgFile = new  File("/sdcard/AppAgendaTea/"+ruta);
-                if(imgFile.exists()){
-                    this.imagen = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                }
-            }
+            //TODO: cambiarlo por la petición a SQLite de una imagen
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -64,20 +68,24 @@ public class Familia {
         this.nombre = nombre;
     }
 
-    public String getRuta() {
-        return ruta;
-    }
-
-    public void setRuta(String ruta) {
-        this.ruta = ruta;
-    }
-
-    public Bitmap getImagen() {
+    public byte[] getImagen() {
         return imagen;
     }
 
-    public void setImagen(Bitmap imagen) {
+    public void setImagen(byte[] imagen) {
         this.imagen = imagen;
+    }
+
+    public ArrayList<Pictograma> getPictogramas() {
+        return pictogramas;
+    }
+
+    public void addPictograma(Pictograma picto){
+        pictogramas.add(picto);
+    }
+
+    public void setPictogramas(ArrayList<Pictograma> pictogramas) {
+        this.pictogramas = pictogramas;
     }
 
 
